@@ -30,9 +30,10 @@ const TILES: { id: Exclude<ArtisanPanel, "home">; label: string }[] = [
 type Props = {
   panel: ArtisanPanel;
   onPanel: (panel: ArtisanPanel) => void;
+  onOpenProfile: () => void;
 };
 
-export function ArtisanHome({ panel, onPanel }: Props) {
+export function ArtisanHome({ panel, onPanel, onOpenProfile }: Props) {
   const back = () => onPanel("home");
 
   if (panel === "work") return <WorkDetail onBack={back} />;
@@ -62,6 +63,13 @@ export function ArtisanHome({ panel, onPanel }: Props) {
           </button>
         ))}
       </div>
+      <button
+        type="button"
+        onClick={onOpenProfile}
+        className="mt-3 min-h-[44px] text-sm font-semibold text-fm-btn-text"
+      >
+        My profile
+      </button>
       <OrderProgress onOpen={() => onPanel("work")} />
     </div>
   );

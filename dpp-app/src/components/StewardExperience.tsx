@@ -7,6 +7,7 @@ import {
   clusterById,
   EVIDENCE_GPS,
   EVIDENCE_LOG,
+  profileByName,
   ROSTER,
   STEWARD,
   type EvidenceEntry,
@@ -69,7 +70,13 @@ function evidenceCountLabel(count: number) {
   return count === 1 ? "1 evidence entry" : `${count} evidence entries`;
 }
 
-export function StewardExperience({ screen }: { screen: StewardTab }) {
+export function StewardExperience({
+  screen,
+  onOpenProfile,
+}: {
+  screen: StewardTab;
+  onOpenProfile: (profileId: string) => void;
+}) {
   const [online, setOnline] = useState(true);
   const [roster, setRoster] = useState<LiveArtisan[]>(copyRoster);
   const [logs, setLogs] = useState<Record<string, LiveEvidence[]>>(initialLogs);
@@ -214,6 +221,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
           onBack={() => setSelectedId(null)}
           onRecordConsent={() => recordConsent(selected.id)}
           onRecordProof={() => setProofFor(selected.id)}
+          onOpenProfile={onOpenProfile}
         />
       )}
 
@@ -373,19 +381,35 @@ function ArtisanDetail({
   onBack,
   onRecordConsent,
   onRecordProof,
+  onOpenProfile,
 }: {
   artisan: LiveArtisan;
   entries: LiveEvidence[];
   onBack: () => void;
   onRecordConsent: () => void;
   onRecordProof: () => void;
+  onOpenProfile: (profileId: string) => void;
 }) {
+  const profile = profileByName(artisan.name);
+
   return (
     <div>
       <BackLink onClick={onBack} />
       <div className="mt-2 flex items-start justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-semibold text-fm-ink">{artisan.name}</h1>
+          <h1 className="font-display text-2xl font-semibold text-fm-ink">
+            {profile ? (
+              <button
+                type="button"
+                onClick={() => onOpenProfile(profile.id)}
+                className="text-left text-fm-btn-text"
+              >
+                {artisan.name}
+              </button>
+            ) : (
+              artisan.name
+            )}
+          </h1>
           <p className="mt-1 text-fm-ink">{artisan.craft}</p>
           <p className="text-fm-muted">{artisan.village}</p>
           <p className="mt-1 text-sm text-fm-muted">{artisan.id}</p>

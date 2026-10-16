@@ -18,10 +18,20 @@ const FM_BLUE = "#1799b5";
 const FM_BTN_BG = "#0081A1";
 const FM_BTN_TEXT = "#006E8A";
 
-type Props = {
+export type LocationPin = {
+  lat: number;
+  lng: number;
+  label: string;
+};
+
+type ClusterMapProps = {
   selectedId: string | null;
   onSelect: (id: string) => void;
   matchedIds?: string[] | null;
+};
+
+type PinMapProps = {
+  pin: LocationPin;
 };
 
 function FitSelection({ selectedId }: { selectedId: string | null }) {
@@ -76,11 +86,93 @@ function pinClasses(
   };
 }
 
-export function IndiaMap({ selectedId, onSelect, matchedIds = null }: Props) {
+function MapSizeGuard() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+    let frame = 0;
+    const update = () => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      if (width < 1 || height < 1) return;
+      const size = map.getSize();
+      if (size.x === width && size.y === height) return;
+      map.invalidateSize();
+    };
+    update();
+    const observer = new ResizeObserver(() => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(update);
+    });
+    observer.observe(container);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [map]);
+
+  return null;
+}
+
+function SinglePinMap({ pin }: { pin: LocationPin }) {
+  return (
+    <div
+      className="relative z-0 isolate w-full max-w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-neu"
+      role="region"
+      aria-label={`Map of ${pin.label}`}
+    >
+      <MapContainer
+        center={[pin.lat, pin.lng]}
+        zoom={8}
+        className="z-0 h-[200px] w-full max-w-full [&_.leaflet-bottom]:!z-[2] [&_.leaflet-control]:!z-[2] [&_.leaflet-control-attribution]:bg-white/90 [&_.leaflet-control-attribution]:text-[10px] [&_.leaflet-pane]:!z-[1] [&_.leaflet-top]:!z-[2]"
+        scrollWheelZoom={false}
+        zoomSnap={0.25}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <MapSizeGuard />
+        <CircleMarker
+          center={[pin.lat, pin.lng]}
+          radius={24}
+          interactive={false}
+          pathOptions={{
+            className: "fm-map-pin-halo fm-map-pin-halo--active",
+            color: FM_BLUE,
+            weight: 1.5,
+            fillColor: FM_BLUE,
+            fillOpacity: 0.28,
+          }}
+        />
+        <CircleMarker
+          center={[pin.lat, pin.lng]}
+          radius={11}
+          interactive={false}
+          pathOptions={{
+            className: "fm-map-pin fm-map-pin--active",
+            color: FM_BLUE,
+            weight: 2.5,
+            fillColor: FM_BTN_BG,
+            fillOpacity: 0.95,
+          }}
+        />
+      </MapContainer>
+    </div>
+  );
+}
+
+export function IndiaMap(props: ClusterMapProps | PinMapProps) {
   const bounds = useMemo(() => {
     const pts = CLUSTERS.map((c) => L.latLng(c.lat, c.lng));
     return L.latLngBounds(pts);
   }, []);
+
+  if ("pin" in props) {
+    return <SinglePinMap pin={props.pin} />;
+  }
+  const { selectedId, onSelect, matchedIds = null } = props;
 
   return (
     <div
@@ -100,6 +192,7 @@ export function IndiaMap({ selectedId, onSelect, matchedIds = null }: Props) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <FitSelection selectedId={selectedId} />
+        <MapSizeGuard />
         {CLUSTERS.map((c) => {
           const active = selectedId === c.id;
           const filtering = matchedIds != null;

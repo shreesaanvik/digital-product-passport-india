@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppHeader } from "./AppHeader";
 import { BottomNav } from "./BottomNav";
-import { CLUSTERS } from "@/lib/data";
+import { CLUSTERS, profileById } from "@/lib/data";
 import {
   BOTTOM_TABS,
   defaultScreen,
@@ -23,6 +23,7 @@ import { PayCategoryScreen } from "./PayCategoryScreen";
 import { RfpCategoryScreen } from "./RfpCategoryScreen";
 import { FeaturesScreen } from "./FeaturesScreen";
 import { ArtisanHome, type ArtisanPanel } from "./ArtisanHome";
+import { ClusterMakers, ProfilePage } from "./ProfilePage";
 import { ArtisanStory } from "./ArtisanStory";
 import { StewardExperience } from "./StewardExperience";
 import { ManufacturerExperience } from "./ManufacturerExperience";
@@ -62,7 +63,10 @@ export function HomeExperience() {
   const [screen, setScreen] = useState<AppScreen>(role ? defaultScreen(role) : "home");
   const [screenRole, setScreenRole] = useState<Role | null>(role);
   const [artisanPanel, setArtisanPanel] = useState<ArtisanPanel>("home");
+  const [profileStack, setProfileStack] = useState<string[]>([]);
   const seenRole = useRef(role);
+  const profileId =
+    role != null && screenRole === role ? (profileStack[profileStack.length - 1] ?? null) : null;
 
   const activeScreen: AppScreen =
     role == null
@@ -78,11 +82,18 @@ export function HomeExperience() {
     setScreen(role ? defaultScreen(role) : "home");
     setArtisanPanel("home");
     setMenuOpen(false);
+    setProfileStack([]);
   }, [role]);
 
   useEffect(() => {
     scrollPhoneToTop();
-  }, [role, activeScreen]);
+  }, [role, activeScreen, profileId]);
+
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      window.scrollTo(0, 0);
+    }
+  }, [profileId]);
 
   const setRole = useCallback(
     (next: Role | null) => {
@@ -95,7 +106,17 @@ export function HomeExperience() {
     [router, searchParams],
   );
 
+  const openProfile = useCallback((id: string) => {
+    setProfileStack((stack) => (stack[stack.length - 1] === id ? stack : [...stack, id]));
+  }, []);
+
+  const closeProfile = useCallback(() => {
+    setProfileStack((stack) => stack.slice(0, -1));
+  }, []);
+
   const cluster = CLUSTERS.find((c) => c.id === clusterId) ?? null;
+  const avatarProfileId =
+    role === "steward" ? "karigar" : role === "artisan" ? "lalita" : role === "manufacturer" ? "bhujodi" : null;
 
   if (!role) {
     return <ExploreAsScreen onSelect={setRole} />;
@@ -111,6 +132,11 @@ export function HomeExperience() {
         onMenuClick={() => setMenuOpen((open) => !open)}
         role={role}
         tooltip={roleTooltip(role)}
+        onAvatarClick={
+          avatarProfileId && profileById(avatarProfileId)
+            ? () => openProfile(avatarProfileId)
+            : undefined
+        }
       />
 
       <NavMenuDrawer
@@ -121,6 +147,7 @@ export function HomeExperience() {
           setRole(null);
         }}
         onOpenScreen={(next) => {
+          setProfileStack([]);
           setScreen(next);
           setMenuOpen(false);
         }}
@@ -129,6 +156,10 @@ export function HomeExperience() {
 
       <div id={PHONE_PAGE_ID}>
       <main className={`mx-auto max-w-lg px-4 pt-4 ${tabs.length > 0 ? "pb-28" : "pb-8"}`}>
+        {profileId && (
+          <ProfilePage key={profileId} profileId={profileId} onBack={closeProfile} onOpen={openProfile} />
+        )}
+        <div hidden={profileId !== null}>
         {activeScreen === "clusters" && (
           <>
             <IndiaMap selectedId={clusterId} onSelect={setClusterId} />
@@ -157,6 +188,9 @@ export function HomeExperience() {
                 </div>
               </div>
             )}
+            {role === "creative" && cluster && (
+              <ClusterMakers clusterId={cluster.id} onOpen={openProfile} />
+            )}
             <button
               type="button"
               onClick={() => setScreen("passport")}
@@ -169,7 +203,7 @@ export function HomeExperience() {
 
         {role === "steward" &&
           (activeScreen === "artisans" || activeScreen === "passports") && (
-            <StewardExperience screen={activeScreen} />
+            <StewardExperience screen={activeScreen} onOpenProfile={openProfile} />
           )}
 
         {role === "manufacturer" &&
@@ -211,17 +245,29 @@ export function HomeExperience() {
         )}
 
         {role === "artisan" && activeScreen === "home" && (
-          <ArtisanHome panel={artisanPanel} onPanel={setArtisanPanel} />
+          <ArtisanHome
+            panel={artisanPanel}
+            onPanel={setArtisanPanel}
+            onOpenProfile={() => openProfile("lalita")}
+          />
         )}
 
         {((activeScreen === "order" && role !== "manufacturer") ||
           (activeScreen === "home" && role !== "artisan") ||
           (activeScreen === "artisans" && role !== "steward")) && <BuiltLater />}
+        </div>
       </main>
       </div>
 
       {tabs.length > 0 && (
-        <BottomNav tabs={tabs} active={bottomActive} onChange={setScreen} />
+        <BottomNav
+          tabs={tabs}
+          active={bottomActive}
+          onChange={(next) => {
+            setProfileStack([]);
+            setScreen(next);
+          }}
+        />
       )}
     </>
   );

@@ -9,9 +9,10 @@ type Props = {
   menuOpen: boolean;
   role: Role;
   tooltip: string;
+  onAvatarClick?: () => void;
 };
 
-export function AppHeader({ onMenuClick, menuOpen, role, tooltip }: Props) {
+export function AppHeader({ onMenuClick, menuOpen, role, tooltip, onAvatarClick }: Props) {
   return (
     <header className="sticky top-0 z-40 bg-fm-surface/95 backdrop-blur-md border-b border-slate-200/80">
       <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-3">
@@ -50,7 +51,7 @@ export function AppHeader({ onMenuClick, menuOpen, role, tooltip }: Props) {
             Demo
           </span>
         </div>
-        <RoleAvatar role={role} label={tooltip} />
+        <RoleAvatar role={role} label={tooltip} onClick={onAvatarClick} />
       </div>
     </header>
   );

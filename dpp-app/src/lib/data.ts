@@ -148,6 +148,179 @@ export const CLUSTER_PASSPORTS: Record<ClusterId, ClusterPassport> = {
   },
 };
 
+export type ProfileTypeLabel = "Fair Trade Enterprise" | "Artisan" | "Manufacturer";
+
+export type ProfileStockist = {
+  name: string;
+  city: string;
+  country: string;
+  stocks: string;
+  since: number;
+  via?: string;
+};
+
+export type Profile = {
+  id: string;
+  name: string;
+  typeLabel: ProfileTypeLabel;
+  description: string;
+  logo?: string;
+  avatar?: { initial: string; color: string };
+  location: { name: string; lat: number; lng: number };
+  experience: readonly string[];
+  exportStatus?: string;
+  exportCode?: string;
+  markets?: string;
+  stockists: readonly ProfileStockist[];
+  worksWith: readonly string[];
+};
+
+const KARIGAR_STOCKISTS: readonly ProfileStockist[] = [
+  {
+    name: "Indigo & Oak",
+    city: "Amsterdam",
+    country: "Netherlands",
+    stocks: "block-printed scarves",
+    since: 2021,
+  },
+  {
+    name: "Handwerk Atelier",
+    city: "Berlin",
+    country: "Germany",
+    stocks: "Ajrakh fabric by the metre",
+    since: 2022,
+  },
+  {
+    name: "Loom Street",
+    city: "New York",
+    country: "United States",
+    stocks: "shawls and home textiles",
+    since: 2023,
+  },
+];
+
+const NAMED_PROFILES: readonly Profile[] = [
+  {
+    id: "karigar",
+    name: "Karigar Collective",
+    typeLabel: "Fair Trade Enterprise",
+    description: "Fair trade enterprise connecting artisan clusters with global buyers",
+    logo: "/karigar-logo.png",
+    location: { name: "Bangalore, Karnataka", lat: 12.9716, lng: 77.5946 },
+    experience: [
+      "Sources handcrafted textiles from artisan clusters across India",
+      "Runs quality checks before every shipment",
+      "Coordinates export documentation and shipping",
+      "Field coordinators record Proof of Hand at each production stage",
+    ],
+    exportStatus: "IEC registered",
+    exportCode: "IEC 07XX XXXX XX",
+    markets: "Netherlands, Germany, United States",
+    stockists: KARIGAR_STOCKISTS,
+    worksWith: ["lalita", "bhujodi"],
+  },
+  {
+    id: "lalita",
+    name: "Lalita Rabari",
+    typeLabel: "Artisan",
+    description: "Third-generation Ajrakh block-printer",
+    avatar: { initial: "L", color: "#b55194" },
+    location: { name: "Ajrakhpur, Kutch, Gujarat", lat: 23.24, lng: 69.67 },
+    experience: [
+      "18 years of Ajrakh block-printing",
+      "Natural indigo and madder dyeing",
+      "Supplies fabric through Karigar Collective",
+    ],
+    exportStatus: "Exports through Karigar Collective (IEC registered)",
+    markets: "Netherlands, Germany, United States",
+    stockists: KARIGAR_STOCKISTS.map((stockist) => ({
+      ...stockist,
+      via: "via Karigar Collective",
+    })),
+    worksWith: ["karigar"],
+  },
+  {
+    id: "bhujodi",
+    name: "Bhujodi Weavers Co-operative",
+    typeLabel: "Manufacturer",
+    description: "Co-operative pooling handwoven wool from weaving households",
+    avatar: { initial: "D", color: "#9351b5" },
+    location: { name: "Bhujodi, Kutch, Gujarat", lat: 23.21, lng: 69.71 },
+    experience: [
+      "Pools output from 5 weaving households",
+      "Handles volume orders of 40 pieces or more",
+      "Every piece tagged to its maker",
+    ],
+    exportStatus: "IEC registered",
+    exportCode: "IEC 24XX XXXX XX",
+    markets: "Germany, United States",
+    stockists: [
+      {
+        name: "Wollhaus Studio",
+        city: "Hamburg",
+        country: "Germany",
+        stocks: "handwoven shawls",
+        since: 2022,
+      },
+      {
+        name: "North Thread",
+        city: "Brooklyn",
+        country: "United States",
+        stocks: "wool throws",
+        since: 2024,
+      },
+    ],
+    worksWith: ["karigar"],
+  },
+];
+
+function clusterArtisanName(artisan: string, clusterName: string): string {
+  const splitAt = artisan.indexOf(",");
+  if (splitAt === -1) return artisan.trim();
+  const head = artisan.slice(0, splitAt).trim();
+  const tail = artisan.slice(splitAt + 1).trim();
+  if (tail.localeCompare(clusterName, undefined, { sensitivity: "accent" }) === 0) return head;
+  return artisan.trim();
+}
+
+function basicClusterProfiles(): Profile[] {
+  return CLUSTERS.filter((cluster) => cluster.id !== "kutch").map((cluster) => {
+    const name = clusterArtisanName(CLUSTER_PASSPORTS[cluster.id].artisan, cluster.name);
+    return {
+      id: cluster.id,
+      name,
+      typeLabel: "Artisan",
+      description: cluster.craft,
+      avatar: { initial: name.charAt(0).toUpperCase(), color: "#b55194" },
+      location: { name: cluster.name, lat: cluster.lat, lng: cluster.lng },
+      experience: [],
+      stockists: [],
+      worksWith: [],
+    };
+  });
+}
+
+export const PROFILES: readonly Profile[] = [...NAMED_PROFILES, ...basicClusterProfiles()];
+
+const KUTCH_MAKER_IDS = ["karigar", "lalita", "bhujodi"] as const;
+
+export function profileById(id: string): Profile | undefined {
+  return PROFILES.find((profile) => profile.id === id);
+}
+
+export function profileByName(name: string): Profile | undefined {
+  const key = name.trim().toLowerCase();
+  return PROFILES.find((profile) => profile.name.toLowerCase() === key);
+}
+
+export function makersForCluster(clusterId: ClusterId): Profile[] {
+  const ids = clusterId === "kutch" ? KUTCH_MAKER_IDS : [clusterId];
+  return ids.flatMap((id) => {
+    const profile = profileById(id);
+    return profile ? [profile] : [];
+  });
+}
+
 export function stageIndex(stages: readonly string[], current: string): number {
   const index = stages.indexOf(current);
   return index < 0 ? 0 : index;
