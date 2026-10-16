@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { PHONE_PAGE_ID } from "@/lib/appScrollLock";
-import { EXPLORE_CARDS, type Role } from "@/lib/roles";
+import { EXPLORE_CARDS, ROLE_COLORS, type Role } from "@/lib/roles";
 
 type Props = {
   onSelect: (role: Role) => void;
@@ -36,20 +36,27 @@ export function ExploreAsScreen({ onSelect }: Props) {
       </div>
 
       <ul className="flex flex-col gap-3">
-        {EXPLORE_CARDS.map((card) => (
-          <li key={card.role}>
-            <button
-              type="button"
-              onClick={() => onSelect(card.role)}
-              className="w-full rounded-2xl border border-slate-100 bg-white p-5 text-left shadow-neu transition-colors hover:bg-fm-surface min-h-[88px]"
-            >
-              <span className="block font-display text-xl font-semibold text-fm-ink">
-                {card.title}
-              </span>
-              <span className="mt-1 block text-sm text-fm-muted">{card.line}</span>
-            </button>
-          </li>
-        ))}
+        {EXPLORE_CARDS.map((card) => {
+          const colors = ROLE_COLORS[card.role];
+          return (
+            <li key={card.role}>
+              <button
+                type="button"
+                onClick={() => onSelect(card.role)}
+                className="min-h-[88px] w-full rounded-2xl border border-slate-100 bg-white p-5 text-left shadow-neu transition-colors hover:bg-fm-surface"
+                style={{ borderLeftWidth: 8, borderLeftColor: colors.edge }}
+              >
+                <span
+                  className="block font-display text-xl font-semibold"
+                  style={{ color: colors.title }}
+                >
+                  {card.title}
+                </span>
+                <span className="mt-1 block text-sm text-fm-muted">{card.line}</span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </main>
   );

@@ -13,7 +13,7 @@ const PRIOR_STEPS = KUTCH_PASSPORT.stages.slice(
   stageIndex(KUTCH_PASSPORT.stages, KUTCH_PASSPORT.currentStage),
 );
 const STAMP_PLACE = "23.24 N, 69.67 E (Kutch)";
-const STAMP_BY = "Recorded by Priya Chauhan, Steward";
+const STAMP_BY = "Recorded by Priya Chauhan, Field coordinator, Karigar Collective";
 
 function formatStamp(date: Date) {
   const day = date.toLocaleDateString("en-US", {

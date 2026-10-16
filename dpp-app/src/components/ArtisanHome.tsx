@@ -11,6 +11,7 @@ import {
 } from "@/lib/data";
 import { BackLink } from "./BackLink";
 import { PassportPanel } from "./PassportPanel";
+import { RoleAvatar } from "./RoleAvatar";
 
 const KUTCH_PATTERN = clusterById("kutch");
 
@@ -354,12 +355,7 @@ function StewardDetail({ onBack }: { onBack: () => void }) {
   return (
     <DetailShell title="My steward" onBack={onBack}>
       <div className="flex items-center gap-4">
-        <div
-          className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-fm-blue font-display text-4xl font-bold text-white"
-          aria-hidden
-        >
-          {ARTISAN.steward.name.charAt(0)}
-        </div>
+        <RoleAvatar role="steward" size="lg" />
         <div>
           <p className="font-display text-2xl font-semibold leading-tight text-fm-ink">
             {ARTISAN.steward.name}

@@ -253,7 +253,11 @@ export const ARTISAN = {
   craft: "Ajrakh block-print",
   cluster: "Kutch, Gujarat",
   generation: "Third-generation block-printer",
-  steward: { name: "Priya Chauhan", role: "Steward, Kutch", lastVisit: "28 Sep" },
+  steward: {
+    name: "Priya Chauhan",
+    role: "Field coordinator, Karigar Collective",
+    lastVisit: "28 Sep",
+  },
   order: {
     code: MAIN_ORDER.code,
     product: MAIN_ORDER.product,

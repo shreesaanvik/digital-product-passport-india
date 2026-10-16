@@ -48,7 +48,19 @@ export const ROLE_PROFILES: Record<Role, RoleProfile> = {
   },
 };
 
+/** Edge color is the role color. Title is a darker same hue only when the role color is too light on white. */
+export const ROLE_COLORS: Record<Role, { edge: string; title: string }> = {
+  steward: { edge: "#66BB6A", title: "#3a823e" },
+  artisan: { edge: "#b55194", title: "#b55194" },
+  creative: { edge: "#f16f0f", title: "#c1570b" },
+  manufacturer: { edge: "#9351b5", title: "#9351b5" },
+  government: { edge: "#1799b5", title: "#1799b5" },
+};
+
 export function roleTooltip(role: Role): string {
+  if (role === "steward") {
+    return "Priya Chauhan, Field coordinator, Karigar Collective";
+  }
   const { name, roleLabel } = ROLE_PROFILES[role];
   if (name === roleLabel) return roleLabel;
   return `${name}, ${roleLabel}`;

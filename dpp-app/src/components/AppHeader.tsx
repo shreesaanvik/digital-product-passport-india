@@ -1,15 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import type { Role } from "@/lib/roles";
+import { RoleAvatar } from "./RoleAvatar";
 
 type Props = {
   onMenuClick: () => void;
   menuOpen: boolean;
-  initial: string;
+  role: Role;
   tooltip: string;
 };
 
-export function AppHeader({ onMenuClick, menuOpen, initial, tooltip }: Props) {
+export function AppHeader({ onMenuClick, menuOpen, role, tooltip }: Props) {
   return (
     <header className="sticky top-0 z-40 bg-fm-surface/95 backdrop-blur-md border-b border-slate-200/80">
       <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-3">
@@ -48,13 +50,7 @@ export function AppHeader({ onMenuClick, menuOpen, initial, tooltip }: Props) {
             Demo
           </span>
         </div>
-        <div
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-fm-blue text-white font-display font-bold text-xl shadow-md"
-          title={tooltip}
-          aria-label={tooltip}
-        >
-          {initial}
-        </div>
+        <RoleAvatar role={role} label={tooltip} />
       </div>
     </header>
   );

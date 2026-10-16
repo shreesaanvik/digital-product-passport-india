@@ -9,7 +9,6 @@ import { BottomNav } from "./BottomNav";
 import { CLUSTERS } from "@/lib/data";
 import {
   BOTTOM_TABS,
-  ROLE_PROFILES,
   defaultScreen,
   isRole,
   roleTooltip,
@@ -102,7 +101,6 @@ export function HomeExperience() {
     return <ExploreAsScreen onSelect={setRole} />;
   }
 
-  const profile = ROLE_PROFILES[role];
   const tabs = BOTTOM_TABS[role];
   const bottomActive = tabs.some((tab) => tab.id === activeScreen) ? activeScreen : null;
 
@@ -111,7 +109,7 @@ export function HomeExperience() {
       <AppHeader
         menuOpen={menuOpen}
         onMenuClick={() => setMenuOpen((open) => !open)}
-        initial={profile.initial}
+        role={role}
         tooltip={roleTooltip(role)}
       />
 
