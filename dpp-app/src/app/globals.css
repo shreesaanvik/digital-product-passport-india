@@ -163,6 +163,28 @@ body {
   padding: 4px;
 }
 
+@media (min-width: 768px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background: linear-gradient(180deg, #f7f6f2 0%, #eef5f7 100%);
+  }
+
+  #dpp-phone-viewport [class~="h-[90dvh]"],
+  #dpp-phone-scroll [class~="h-[90dvh]"] {
+    height: 90%;
+    max-height: 90%;
+    min-height: 0;
+  }
+
+  #dpp-phone-viewport [class~="max-h-[85dvh]"],
+  #dpp-phone-scroll [class~="max-h-[85dvh]"] {
+    max-height: 85%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fm-map-pin--active,
   .fm-map-pin--idle,

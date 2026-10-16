@@ -8,6 +8,8 @@ import {
   type ReactNode,
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { lockAppScroll } from "@/lib/appScrollLock";
+import { PhoneOverlay } from "@/components/PhoneOverlay";
 
 type Props = {
   open: boolean;
@@ -42,11 +44,7 @@ export function DemoSheet({ open, title, onClose, onReset, children }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
+    return lockAppScroll();
   }, [open]);
 
   function trapTab(event: ReactKeyboardEvent<HTMLDivElement>) {
@@ -69,6 +67,7 @@ export function DemoSheet({ open, title, onClose, onReset, children }: Props) {
   }
 
   return (
+    <PhoneOverlay>
     <AnimatePresence>
       {open && (
         <div key="feature-sheet" className="fixed inset-0 z-[80] flex items-end justify-center">
@@ -122,5 +121,6 @@ export function DemoSheet({ open, title, onClose, onReset, children }: Props) {
         </div>
       )}
     </AnimatePresence>
+    </PhoneOverlay>
   );
 }

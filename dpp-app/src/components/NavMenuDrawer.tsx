@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { lockAppScroll } from "@/lib/appScrollLock";
 import type { AppScreen } from "@/lib/roles";
+import { PhoneOverlay } from "./PhoneOverlay";
 
 type MenuScreen = Extract<AppScreen, "story" | "pay" | "whats-live">;
 
@@ -37,17 +39,12 @@ export function NavMenuDrawer({
   }, [open, onClose]);
 
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (!open) return;
+    return lockAppScroll();
   }, [open]);
 
   return (
+    <PhoneOverlay>
     <>
       <div
         className={`fixed inset-0 z-[60] bg-fm-ink/40 backdrop-blur-[2px] transition-opacity duration-200 ${
@@ -112,5 +109,6 @@ export function NavMenuDrawer({
         </nav>
       </div>
     </>
+    </PhoneOverlay>
   );
 }

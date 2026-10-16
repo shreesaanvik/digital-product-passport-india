@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { PHONE_PAGE_ID } from "@/lib/appScrollLock";
 import { EXPLORE_CARDS, type Role } from "@/lib/roles";
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 
 export function ExploreAsScreen({ onSelect }: Props) {
   return (
-    <main className="mx-auto max-w-lg px-4 py-8">
+    <main id={PHONE_PAGE_ID} className="mx-auto max-w-lg px-4 py-8">
       <div className="mb-8 flex flex-col items-center text-center">
         <Image
           src="/logo.png"

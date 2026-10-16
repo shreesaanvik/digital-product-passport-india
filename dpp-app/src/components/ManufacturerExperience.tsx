@@ -11,6 +11,8 @@ import {
   type PooledMaterials,
   type PooledPiece,
 } from "@/lib/data";
+import { lockAppScroll } from "@/lib/appScrollLock";
+import { PhoneOverlay } from "./PhoneOverlay";
 import { PassportPanel, type PassportTechnicalExtra } from "./PassportPanel";
 
 type ManufacturerScreen = "order" | "passport";
@@ -445,15 +447,15 @@ function PieceSheet({
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const unlock = lockAppScroll();
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previous;
+      unlock();
     };
   }, [onClose]);
 
   return (
+    <PhoneOverlay>
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <motion.button
         type="button"
@@ -521,5 +523,6 @@ function PieceSheet({
         </button>
       </motion.div>
     </div>
+    </PhoneOverlay>
   );
 }

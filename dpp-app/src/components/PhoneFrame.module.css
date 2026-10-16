@@ -1,0 +1,197 @@
+/* Phone chrome. Keep 418/872, 24px padding, 280px panel, and 56px gap
+   in sync with PhoneFrame.tsx. */
+
+.islandSlot,
+.home,
+.panel {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .root {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    padding: 24px;
+    background: linear-gradient(180deg, #f7f6f2 0%, #eef5f7 100%);
+  }
+
+  .slot {
+    flex: none;
+    width: calc(418px * var(--dpp-phone-scale, 1));
+    height: calc(872px * var(--dpp-phone-scale, 1));
+  }
+
+  .device {
+    box-sizing: border-box;
+    width: 418px;
+    height: 872px;
+    padding: 14px;
+    border-radius: 56px;
+    background: #13232f;
+    box-shadow: 0 16px 36px rgba(19, 35, 47, 0.16);
+    transform: scale(var(--dpp-phone-scale, 1));
+    transform-origin: top left;
+  }
+
+  .viewport {
+    --dpp-island-h: 34px;
+    --dpp-nav-h: 0px;
+    --dpp-home-h: 0px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 390px;
+    height: 844px;
+    overflow: hidden;
+    border-radius: 44px;
+    background: #f8fafc;
+    transform: translateZ(0);
+  }
+
+  .islandSlot {
+    position: relative;
+    z-index: 45;
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    height: var(--dpp-island-h);
+    background: #f8fafc;
+    pointer-events: none;
+  }
+
+  .island {
+    width: 118px;
+    height: 34px;
+    border-radius: 999px;
+    background: #13232f;
+  }
+
+  .screen {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    background: #f8fafc;
+  }
+
+  .screen :global(header.sticky) {
+    position: relative;
+    top: auto;
+    flex: none;
+  }
+
+  .screen :global(#dpp-phone-page) {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: calc(var(--dpp-nav-h) + var(--dpp-home-h));
+    scrollbar-width: thin;
+    scrollbar-color: rgba(19, 35, 47, 0.35) transparent;
+  }
+
+  .screen :global(#dpp-phone-page > main[class~="pb-28"]) {
+    padding-bottom: 0;
+  }
+
+  .screen :global(#dpp-phone-page)::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .screen :global(#dpp-phone-page)::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(19, 35, 47, 0.28);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+  }
+
+  /* pointer-events is inherited, so the overlay's none would block the
+     drawer and sheets. Restore clicks on those layers, but leave a closed
+     backdrop (pointer-events-none) out so it does not cover the phone. */
+  .overlay > :global(*:not([class~="pointer-events-none"])) {
+    pointer-events: auto;
+  }
+
+  .overlay :global(#app-nav-drawer) {
+    z-index: 70;
+    pointer-events: auto;
+  }
+
+  .viewport :global([class~="fixed"][class~="inset-0"]) {
+    top: var(--dpp-island-h);
+  }
+
+  .viewport :global([class~="fixed"][class~="top-0"][class~="h-full"]) {
+    top: var(--dpp-island-h);
+    height: calc(100% - var(--dpp-island-h));
+  }
+
+  .home {
+    position: absolute;
+    right: 0;
+    bottom: 8px;
+    left: 0;
+    z-index: 35;
+    display: block;
+    width: 128px;
+    height: 5px;
+    margin: 0 auto;
+    border-radius: 999px;
+    background: rgba(19, 35, 47, 0.45);
+    pointer-events: none;
+  }
+}
+
+@media (min-width: 1100px) {
+  .panel {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: center;
+    width: 280px;
+  }
+}
+
+.logo {
+  width: auto;
+  height: 28px;
+  max-width: 100%;
+}
+
+.title {
+  margin: 20px 0 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #13232f;
+}
+
+.note {
+  margin: 10px 0 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: #526068;
+}
+
+.note + .note {
+  margin-top: 4px;
+}

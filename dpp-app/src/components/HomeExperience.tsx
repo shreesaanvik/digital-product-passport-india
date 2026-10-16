@@ -16,6 +16,7 @@ import {
   type AppScreen,
   type Role,
 } from "@/lib/roles";
+import { PHONE_PAGE_ID, scrollPhoneToTop } from "@/lib/appScrollLock";
 import { NavMenuDrawer } from "./NavMenuDrawer";
 import { ExploreAsScreen } from "./ExploreAsScreen";
 import { PassportPanel } from "./PassportPanel";
@@ -80,6 +81,10 @@ export function HomeExperience() {
     setMenuOpen(false);
   }, [role]);
 
+  useEffect(() => {
+    scrollPhoneToTop();
+  }, [role, activeScreen]);
+
   const setRole = useCallback(
     (next: Role | null) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -124,6 +129,7 @@ export function HomeExperience() {
         activeScreen={activeScreen}
       />
 
+      <div id={PHONE_PAGE_ID}>
       <main className={`mx-auto max-w-lg px-4 pt-4 ${tabs.length > 0 ? "pb-28" : "pb-8"}`}>
         {activeScreen === "clusters" && (
           <>
@@ -214,6 +220,7 @@ export function HomeExperience() {
           (activeScreen === "home" && role !== "artisan") ||
           (activeScreen === "artisans" && role !== "steward")) && <BuiltLater />}
       </main>
+      </div>
 
       {tabs.length > 0 && (
         <BottomNav tabs={tabs} active={bottomActive} onChange={setScreen} />
