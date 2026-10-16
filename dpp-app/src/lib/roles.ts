@@ -37,14 +37,14 @@ export function isRole(value: string | null): value is Role {
 }
 
 export const ROLE_PROFILES: Record<Role, RoleProfile> = {
-  steward: { initial: "P", name: "Priya", roleLabel: "Steward" },
+  steward: { initial: "P", name: "Priya", roleLabel: "Fair Trade Enterprise" },
   artisan: { initial: "L", name: "Lalita", roleLabel: "Artisan" },
   creative: { initial: "M", name: "Maren", roleLabel: "Creative" },
   manufacturer: { initial: "D", name: "Devan", roleLabel: "Manufacturer" },
   government: {
     initial: "G",
-    name: "Government body",
-    roleLabel: "Government body",
+    name: "Government / Trade Groups",
+    roleLabel: "Government / Trade Groups",
   },
 };
 
@@ -57,18 +57,18 @@ export function roleTooltip(role: Role): string {
 export const EXPLORE_CARDS: { role: Role; title: string; line: string }[] = [
   {
     role: "steward",
-    title: "Steward",
+    title: "Fair Trade Enterprise",
     line: "Onboard artisans and record proof of their work",
   },
   {
     role: "artisan",
     title: "Artisan",
-    line: "See your work, payments and passport",
+    line: "Profile, Payments, and Passports",
   },
   {
     role: "creative",
     title: "Creative",
-    line: "Find makers, post requests and view passports",
+    line: "Discover Artisans, Post RFPs, View Passports",
   },
   {
     role: "manufacturer",
@@ -77,8 +77,8 @@ export const EXPLORE_CARDS: { role: Role; title: string; line: string }[] = [
   },
   {
     role: "government",
-    title: "Government body",
-    line: "Review features and inspect passport data",
+    title: "Government / Trade Groups",
+    line: "Passport Review and Export Data Tracking.",
   },
 ];
 

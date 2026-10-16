@@ -281,7 +281,7 @@ export const STEWARD = {
   area: "Kutch, Gujarat",
 } as const;
 
-export type RosterStatus = "Verified" | "Needs visit" | "Consent pending";
+export type RosterStatus = "Verified" | "Needs Visit" | "Consent Pending";
 
 export type StewardConsent = {
   date: string;
@@ -322,7 +322,7 @@ export const ROSTER: RosterArtisan[] = [
     name: "Rekha Vankar",
     craft: "Handloom weaving",
     village: "Bhujodi",
-    status: "Needs visit",
+    status: "Needs Visit",
     consent: { date: "20 Aug", language: "Gujarati" },
     orderCode: "FM-KUT-2031",
   },
@@ -331,7 +331,7 @@ export const ROSTER: RosterArtisan[] = [
     name: "Kanku Ahir",
     craft: "Ahir embroidery",
     village: "Dhaneti",
-    status: "Consent pending",
+    status: "Consent Pending",
     consent: null,
     orderCode: null,
   },

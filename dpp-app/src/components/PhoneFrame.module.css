@@ -171,9 +171,13 @@
 }
 
 .logo {
+  display: block;
   width: auto;
   height: 28px;
-  max-width: 100%;
+  max-width: none;
+  object-fit: contain;
+  aspect-ratio: 4117 / 669;
+  flex-shrink: 0;
 }
 
 .title {

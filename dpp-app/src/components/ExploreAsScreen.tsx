@@ -15,17 +15,23 @@ export function ExploreAsScreen({ onSelect }: Props) {
         <Image
           src="/logo.png"
           alt="Fashion Mingle"
-          width={280}
+          width={197}
           height={32}
-          className="h-8 w-auto"
-          style={{ width: "auto", height: "32px" }}
+          className="h-8 w-auto max-w-none shrink-0 object-contain"
+          style={{
+            width: "auto",
+            height: "32px",
+            maxWidth: "none",
+            objectFit: "contain",
+            aspectRatio: "4117 / 669",
+          }}
           priority
         />
         <h1 className="font-display mt-8 text-3xl font-semibold text-fm-blue">
-          Explore as
+          Digital Product Passport
         </h1>
         <p className="mt-2 text-fm-muted">
-          Demo with sample data. No account needed.
+          Click to view features
         </p>
       </div>
 

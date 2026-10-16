@@ -12,12 +12,21 @@ const SAMPLE_RECORDS = {
     craft: lalita?.craft ?? "Ajrakh block-print",
     cluster: clusterById("kutch").name,
     years: 18,
+    status: "Verified",
   },
   "VAR-9982": {
     name: "Meera Devi",
     craft: "Zari Brocade",
     cluster: "Varanasi",
     years: 24,
+    status: "Verified",
+  },
+  "KUT-4540": {
+    name: "Hansa Marwada",
+    craft: "Kutch embroidery",
+    cluster: "Kutch",
+    years: 9,
+    status: "Verification Pending",
   },
 } as const;
 
@@ -30,6 +39,36 @@ export type VerifiedGovId = {
   cluster: string;
   years: number;
 };
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0 text-[#66BB6A]" fill="none" aria-hidden>
+      <circle cx="10" cy="10" r="9" fill="currentColor" />
+      <path
+        d="M6 10.2 8.7 12.9 14.2 7.2"
+        stroke="#fff"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-5 w-5 shrink-0 text-[#f16f0f]" fill="none" aria-hidden>
+      <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M10 6v4.2l2.6 1.6"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 const SAMPLE_IDS = Object.keys(SAMPLE_RECORDS) as SampleId[];
 
@@ -82,7 +121,13 @@ export function GovIdSyncDemo({ onVerified }: Props = {}) {
     timer.current = window.setTimeout(() => {
       setProfile(record);
       setPhase("found");
-      onVerified?.({ id: key, ...record });
+      onVerified?.({
+        id: key,
+        name: record.name,
+        craft: record.craft,
+        cluster: record.cluster,
+        years: record.years,
+      });
       timer.current = null;
     }, 1500);
   }
@@ -90,9 +135,9 @@ export function GovIdSyncDemo({ onVerified }: Props = {}) {
   return (
     <div className="space-y-4">
       <label htmlFor="gov-artisan-id" className="block text-sm font-medium text-fm-ink">
-        Artisan ID number
+        Artisan ID Number
       </label>
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex items-stretch gap-2">
         <input
           id="gov-artisan-id"
           type="text"
@@ -107,12 +152,12 @@ export function GovIdSyncDemo({ onVerified }: Props = {}) {
             clearTimer();
             onVerified?.(null);
           }}
-          className="min-h-[52px] flex-1 rounded-xl border-2 border-slate-200 px-4 text-lg text-fm-ink placeholder:text-slate-400 focus:border-fm-blue focus:outline-none"
+          className="min-h-[52px] min-w-0 flex-1 rounded-xl border-2 border-slate-200 px-4 text-lg text-fm-ink placeholder:text-slate-400 focus:border-fm-blue focus:outline-none"
         />
         <button
           type="button"
           onClick={() => check(id)}
-          className="min-h-[52px] rounded-xl bg-fm-btn-bg px-6 text-lg font-semibold text-white shadow-md hover:bg-fm-btn-text"
+          className="min-h-[52px] shrink-0 whitespace-nowrap rounded-xl bg-fm-btn-bg px-6 text-lg font-semibold text-white shadow-md hover:bg-fm-btn-text"
         >
           Check ID
         </button>
@@ -121,16 +166,24 @@ export function GovIdSyncDemo({ onVerified }: Props = {}) {
       <div>
         <p className="mb-2 text-sm text-fm-muted">Sample IDs</p>
         <div className="flex flex-wrap gap-2">
-          {SAMPLE_IDS.map((sampleId) => (
-            <button
-              key={sampleId}
-              type="button"
-              onClick={() => check(sampleId)}
-              className="min-h-[44px] rounded-full border border-fm-blue/30 bg-fm-btn-light px-4 text-sm font-semibold text-fm-btn-text"
-            >
-              {sampleId}
-            </button>
-          ))}
+          {SAMPLE_IDS.map((sampleId) => {
+            const selected = id.trim().toUpperCase() === sampleId;
+            return (
+              <button
+                key={sampleId}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => check(sampleId)}
+                className={
+                  selected
+                    ? "min-h-[44px] rounded-full border border-fm-btn-bg bg-fm-btn-bg px-4 text-sm font-semibold text-white"
+                    : "min-h-[44px] rounded-full border border-fm-blue/30 bg-fm-btn-light px-4 text-sm font-semibold text-fm-btn-text"
+                }
+              >
+                {sampleId}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -165,19 +218,22 @@ export function GovIdSyncDemo({ onVerified }: Props = {}) {
             <p className="font-display text-xl font-semibold text-fm-ink">{profile.name}</p>
             <dl className="mt-3 space-y-2 text-sm">
               <div className="flex justify-between gap-3">
-                <dt className="text-fm-muted">Craft</dt>
+                <dt className="text-[#0f0e0e]">Craft</dt>
                 <dd className="text-right text-fm-ink">{profile.craft}</dd>
               </div>
               <div className="flex justify-between gap-3">
-                <dt className="text-fm-muted">Cluster</dt>
+                <dt className="text-[#0f0e0e]">Cluster</dt>
                 <dd className="text-right text-fm-ink">{profile.cluster}</dd>
               </div>
               <div className="flex justify-between gap-3">
-                <dt className="text-fm-muted">Years of practice</dt>
+                <dt className="text-[#0f0e0e]">Years of practice</dt>
                 <dd className="text-right text-fm-ink">{profile.years}</dd>
               </div>
             </dl>
-            <p className="mt-3 font-semibold text-fm-ink">Verified</p>
+            <p className="mt-3 flex items-center gap-2 font-semibold text-fm-ink">
+              {profile.status === "Verified" ? <CheckIcon /> : <ClockIcon />}
+              {profile.status}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

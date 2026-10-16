@@ -26,7 +26,7 @@ const CAPABILITIES: Capability[] = [
   },
   {
     id: "gov-id",
-    name: "Government ID sync",
+    name: "Government ID Sync",
     description: "Pull a verified artisan profile from a national ID database.",
   },
   {

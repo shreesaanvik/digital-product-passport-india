@@ -35,9 +35,9 @@ type LiveEvidence = EvidenceEntry & { sync?: SyncState };
 type StewardTab = "artisans" | "passports";
 
 const STATUS_CLASS: Record<RosterStatus, string> = {
-  Verified: "border-fm-green/25 bg-fm-green-soft text-fm-green",
-  "Needs visit": "border-amber-200 bg-amber-100 text-amber-800",
-  "Consent pending": "border-slate-300 bg-slate-200 text-slate-600",
+  Verified: "bg-[#66BB6A] text-[#0f0e0e]",
+  "Needs Visit": "bg-[#f16f0f] text-[#0f0e0e]",
+  "Consent Pending": "bg-[#b55194] text-[#0f0e0e]",
 };
 
 function formatDayMonth(date: Date) {
@@ -165,7 +165,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
           name: profile.name,
           craft: profile.craft,
           village: profile.cluster,
-          status: "Verified",
+          status: profile.id === "KUT-4540" ? "Needs Visit" : "Verified",
           consent: null,
           orderCode: null,
         },
@@ -219,7 +219,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
 
       {screen === "artisans" && !selected && (
         <div>
-          <h1 className="font-display text-2xl font-semibold text-fm-ink">My artisans</h1>
+          <h1 className="font-display text-2xl font-semibold text-fm-ink">{"Karigar Collective's Artisans"}</h1>
           <p className="mt-1 text-fm-muted">{STEWARD.area}</p>
           <button
             type="button"
@@ -229,7 +229,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
             }}
             className="btn-primary mt-4 min-h-[48px] w-full font-semibold"
           >
-            Add artisan
+            Add Artisan
           </button>
           <label htmlFor="artisan-search" className="mt-4 block text-sm font-medium text-fm-ink">
             Search by name
@@ -289,7 +289,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
       {screen === "passports" && !passportOpen && (
         <div>
           <h1 className="font-display text-2xl font-semibold text-fm-ink">
-            Passports I have recorded
+            {"Karigar Collective's Passports"}
           </h1>
           {withOrders.length === 0 ? (
             <p className="mt-4 text-fm-muted">No passports recorded yet.</p>
@@ -327,7 +327,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
 
       <DemoSheet
         open={addOpen}
-        title="Government ID sync"
+        title="Government ID Sync"
         onClose={() => {
           setAddOpen(false);
           setVerified(null);
@@ -345,7 +345,7 @@ export function StewardExperience({ screen }: { screen: StewardTab }) {
             disabled={verifiedAlready}
             className="btn-primary mt-4 min-h-[52px] w-full text-lg font-semibold disabled:opacity-60"
           >
-            {verifiedAlready ? "Already on my artisans" : "Add to my artisans"}
+            {verifiedAlready ? "This artisan is already saved." : "Add to My Artisans list"}
           </button>
         )}
       </DemoSheet>
@@ -478,7 +478,7 @@ function ArtisanDetail({
 function StatusBadge({ status }: { status: RosterStatus }) {
   return (
     <span
-      className={`inline-flex shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${STATUS_CLASS[status]}`}
+      className={`inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_CLASS[status]}`}
     >
       {status}
     </span>

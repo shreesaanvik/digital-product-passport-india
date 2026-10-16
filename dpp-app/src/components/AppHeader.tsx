@@ -29,10 +29,16 @@ export function AppHeader({ onMenuClick, menuOpen, initial, tooltip }: Props) {
           <Image
             src="/logo.png"
             alt="Fashion Mingle"
-            width={280}
+            width={148}
             height={24}
-            className="h-[24px] w-auto"
-            style={{ width: "auto", height: "24px" }}
+            className="h-[24px] w-auto max-w-none shrink-0 object-contain"
+            style={{
+              width: "auto",
+              height: "24px",
+              maxWidth: "none",
+              objectFit: "contain",
+              aspectRatio: "4117 / 669",
+            }}
             priority
           />
           <p className="text-xs text-fm-ink -mt-0.5">

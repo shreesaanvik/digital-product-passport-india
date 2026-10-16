@@ -96,10 +96,16 @@ export function PhoneFrame({ children }: Props) {
           <Image
             src="/logo.png"
             alt="Fashion Mingle"
-            width={280}
+            width={172}
             height={28}
             className={styles.logo}
-            style={{ width: "auto", height: "28px", maxWidth: "100%" }}
+            style={{
+              width: "auto",
+              height: "28px",
+              maxWidth: "none",
+              objectFit: "contain",
+              aspectRatio: "4117 / 669",
+            }}
             priority
           />
           <p className={styles.title}>Digital Product Passport · India</p>
